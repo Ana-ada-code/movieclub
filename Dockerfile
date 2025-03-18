@@ -1,24 +1,20 @@
-# Użycie obrazu Javy
-FROM eclipse-temurin:17-jdk AS builder
+# Wybierz obraz Javy
+FROM openjdk:17-jdk-slim
 
-# Ustawienie katalogu roboczego
+# Skopiuj pliki projektu do kontenera
+COPY . /app
+
+# Przejdź do katalogu aplikacji
 WORKDIR /app
 
-# Kopiowanie plików projektu
-COPY . .
+# Zainstaluj Maven, jeśli nie jest obecny
+RUN apt-get update && apt-get install -y maven
 
-# Budowanie aplikacji (generuje plik JAR w katalogu target/)
-RUN ./mvnw clean package -DskipTests
+# Zbuduj aplikację
+RUN mvn clean package -DskipTests
 
-# -----------------------------------------
-# Drugi etap: uruchamianie aplikacji
-# -----------------------------------------
-FROM eclipse-temurin:17-jdk
+# Ustaw port, na którym aplikacja będzie nasłuchiwać
+EXPOSE 8080
 
-WORKDIR /app
-
-# Kopiowanie zbudowanego pliku JAR z poprzedniego etapu
-COPY --from=builder /app/target/*.jar app.jar
-
-# Uruchamianie aplikacji
-CMD ["java", "-jar", "app.jar"]
+# Uruchom aplikację
+CMD ["java", "-jar", "target/movieclub-0.0.1-SNAPSHOT.jar"]
