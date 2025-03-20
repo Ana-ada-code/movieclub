@@ -29,6 +29,9 @@ public class FileStorageService {
     }
 
     private void prepareStorageDirectories(Path fileStoragePath, Path imageStoragePath) {
+        logger.info("Initializing file storage at: " + fileStorageLocation);
+        logger.info("Initializing image storage at: " + imageStorageLocation);
+
         try {
             if (Files.notExists(fileStoragePath)) {
                 Files.createDirectories(fileStoragePath);
