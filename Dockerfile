@@ -13,11 +13,14 @@ RUN apt-get update && apt-get install -y maven
 # Zbuduj aplikację
 RUN mvn clean package -DskipTests
 
-# Utwórz katalog /uploads i ustaw odpowiednie uprawnienia
-RUN mkdir -p /uploads && chmod 777 /uploads
+# Skopiuj skrypt startowy do kontenera
+COPY start.sh /start.sh
+
+# Nadaj prawa do wykonania skryptowi
+RUN chmod +x /start.sh
 
 # Ustaw port, na którym aplikacja będzie nasłuchiwać
 EXPOSE 8080
 
-# Uruchom aplikację
-CMD ["java", "-jar", "target/*.jar"]
+# Uruchom aplikację poprzez skrypt
+CMD ["/start.sh"]
