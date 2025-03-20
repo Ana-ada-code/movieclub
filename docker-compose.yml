@@ -30,14 +30,18 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/movieclub
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
+      APP_STORAGE_LOCATION: /uploads
     ports:
       - "8080:8080"
+    volumes:
+      - uploads:/uploads
     networks:
       - app-network
     restart: always
 
 volumes:
   mysql-data:
+  uploads:
 
 networks:
   app-network:
