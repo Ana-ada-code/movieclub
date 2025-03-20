@@ -20,7 +20,7 @@ public class FileStorageService {
     private final String fileStorageLocation;
     private final String imageStorageLocation;
 
-    public FileStorageService(@Value("${app.storage.location}") String storageLocation) {
+    public FileStorageService(@Value("${app.storage.location:/uploads}") String storageLocation) {
         this.fileStorageLocation = storageLocation + "/files/";
         this.imageStorageLocation = storageLocation + "/img/";
         Path fileStoragePath = Path.of(this.fileStorageLocation);
