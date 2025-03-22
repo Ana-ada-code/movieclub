@@ -5,9 +5,12 @@ spring:
     password: admin
   liquibase:
     contexts: prod
-  web:
-    resources:
-      static-locations: classpath:/static/,file:///D:/Ani/java/JavaStart/uploads/
+  config:
+    import: cloud.properties
 app:
+  cloudinary:
+    cloud-name: ${cloud_name}
+    api-key: ${api_key}
+    api-secret: ${api_secret}
   storage:
-    location: D:/Ani/java/JavaStart/uploads
+    image-prefix: ""

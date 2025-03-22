@@ -51,12 +51,16 @@ public class MovieService {
         movie.setShortDescription(movieToSave.getShortDescription());
         movie.setDescription(movieToSave.getDescription());
         movie.setYoutubeTrailerId(movieToSave.getYoutubeTrailerId());
-        Genre genre = genreRepository.findByNameIgnoreCase(movieToSave.getGenre()).orElseThrow();
+
+        Genre genre = genreRepository.findByNameIgnoreCase(movieToSave.getGenre())
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono gatunku: " + movieToSave.getGenre()));
         movie.setGenre(genre);
+
         if (movieToSave.getPoster() != null && !movieToSave.getPoster().isEmpty()) {
-            String savedFileName = fileStorageService.saveImage(movieToSave.getPoster());
-            movie.setPoster(savedFileName);
+            String posterUrl = fileStorageService.saveFile(movieToSave.getPoster()); // Zwraca pełny URL
+            movie.setPoster(posterUrl); // Zapisujemy URL w bazie danych
         }
+
         movieRepository.save(movie);
     }
 

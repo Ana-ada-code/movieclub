@@ -9,3 +9,5 @@ spring:
 app:
   storage:
     location: uploads
+    image-prefix: "/img/"
+
