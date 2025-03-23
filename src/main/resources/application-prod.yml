@@ -12,7 +12,7 @@ spring:
   liquibase:
     contexts: prod
   config:
-    import: cloud.properties, db.properties
+    import: optional:cloud.properties, optional:db.properties
 app:
   cloudinary:
     cloud-name: ${cloud_name}
