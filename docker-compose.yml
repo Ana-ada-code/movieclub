@@ -1,0 +1,48 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: movieclub
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/docker-compose up --build
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: movieclub-app
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/movieclub
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      APP_STORAGE_LOCATION: /uploads
+    ports:
+      - "8080:8080"
+    volumes:
+      - uploads:/uploads
+    networks:
+      - app-network
+    restart: always
+
+volumes:
+  mysql-data:
+  uploads:
+
+networks:
+  app-network:
+    driver: bridge
