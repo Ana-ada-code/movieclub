@@ -6,14 +6,10 @@
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
     <changeSet id="0002-1" author="javastart">
         <createTable tableName="movie">
-            <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints nullable="false" primaryKey="true"/>
-            </column>
             <column name="title" type="VARCHAR(100)"/>
             <column name="original_title" type="VARCHAR(100)"/>
             <column name="release_year" type="INT"/>
             <column name="short_description" type="VARCHAR(200)"/>
-            <column name="description" type="VARCHAR(10000)"/>
             <column name="youtube_trailer_id" type="VARCHAR(20)"/>
             <column name="promoted" type="BOOLEAN"/>
             <column name="poster" type="VARCHAR(100)"/>
@@ -24,5 +20,42 @@
                              referencedColumnNames="id"/>
             </column>
         </createTable>
+    </changeSet>
+
+    <changeSet id="0002-2" author="adamik">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="postgresql"/>
+        </preConditions>
+        <!-- Dodanie kolumny id jako BIGINT -->
+        <addColumn tableName="movie">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="description" type="TEXT"/>
+        </addColumn>
+
+        <!-- Tworzenie sekwencji dla tabel -->
+        <createSequence sequenceName="movie_id_seq" startValue="1" incrementBy="1"/>
+    </changeSet>
+
+    <!-- Ustawienie domyślnej wartości kolumny 'id' z sekwencją -->
+    <changeSet id="0002-3" author="adamik">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="postgresql"/>
+        </preConditions>
+        <addDefaultValue tableName="movie" columnName="id" defaultValueSequenceNext="movie_id_seq"/>
+    </changeSet>
+
+    <!-- 3. Dodajemy ID dla H2 -->
+    <changeSet id="0002-4" author="adamik">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="h2"/>
+        </preConditions>
+        <addColumn tableName="movie">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(10000)"/>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>

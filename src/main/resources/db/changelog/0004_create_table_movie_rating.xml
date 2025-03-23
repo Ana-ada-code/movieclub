@@ -6,9 +6,6 @@
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
     <changeSet id="0004-1" author="javastart">
         <createTable tableName="movie_rating">
-            <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints nullable="false" primaryKey="true"/>
-            </column>
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false"
                              foreignKeyName="fk_movie_rating_user_id"
@@ -32,4 +29,40 @@
                              columnNames="user_id, movie_id"
         />
     </changeSet>
+
+    <changeSet id="0004-2" author="adamik">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="postgresql"/>
+        </preConditions>
+        <!-- Dodanie kolumny id jako BIGINT -->
+        <addColumn tableName="movie_rating">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </addColumn>
+
+        <!-- Tworzenie sekwencji dla tabel -->
+        <createSequence sequenceName="movie_rating_id_seq" startValue="1" incrementBy="1"/>
+    </changeSet>
+
+    <!-- Ustawienie domyślnej wartości kolumny 'id' z sekwencją -->
+    <changeSet id="0004-3" author="adamik">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="postgresql"/>
+        </preConditions>
+        <addDefaultValue tableName="movie_rating" columnName="id" defaultValueSequenceNext="movie_rating_id_seq"/>
+    </changeSet>
+
+    <!-- 3. Dodajemy ID dla H2 -->
+    <changeSet id="0004-4" author="adamik">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="h2"/>
+        </preConditions>
+        <addColumn tableName="movie_rating">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
